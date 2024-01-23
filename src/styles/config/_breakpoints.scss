@@ -1,0 +1,22 @@
+$breakpoints: (
+  // down
+  "sm down": "480px",
+  "md down": "768px",
+  "lg down": "1024px",
+  "xl down": "1280px",
+  "2xl down": "1440px",
+  "3xl down": "1600px",
+  "4xl down": "1920px",
+  "5xl down": "2560px",
+
+  // up
+  "xs up": "320px",
+  "sm up": "481px",
+  "md up": "769px",
+  "lg up": "1025px",
+  "xl up": "1281px",
+  "2xl up": "1441px",
+  "3xl up": "1601px",
+  "4xl up": "1921px",
+  "5xl up": "2561px"
+) !default;
