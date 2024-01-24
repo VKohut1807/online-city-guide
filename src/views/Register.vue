@@ -1,15 +1,19 @@
 <script setup lang="ts">
+import { onMounted, computed, ComputedRef } from "vue";
+import ArrowRight from "@/images/svg/arrow-right.vue";
+
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { onMounted, computed, ComputedRef } from "vue";
+
+import { AuthActions } from "@/store/modules/auth";
 import { UserType } from "@/types/user-types";
-import ArrowRight from "@/images/svg/arrow-right.vue";
 const store = useStore();
 const router = useRouter();
 
 const isSubmitting: ComputedRef<boolean> = computed(
   () => store.state.auth.isSubmitting
 );
+const validationErrors = computed(() => store.state.auth.validationErrors);
 
 const user: UserType = {
   username: null,
@@ -19,7 +23,7 @@ const user: UserType = {
 
 const onsubmit = (): void => {
   store
-    .dispatch("register", {
+    .dispatch(AuthActions.register, {
       username: user.username,
       email: user.email,
       password: user.password,
@@ -57,6 +61,15 @@ onMounted(() => {});
         </div>
       </div>
       <div class="register__right">
+        <sup
+          style="color: red"
+          v-for="(valueError, nameError) in validationErrors"
+          :key="nameError"
+          >{{ nameError }}. -
+          <span v-for="(error, idxErr) in valueError" :key="idxErr">{{
+            error
+          }}</span>
+        </sup>
         <h2>Registration</h2>
         <form @submit.prevent="onsubmit" class="right__form">
           <div>

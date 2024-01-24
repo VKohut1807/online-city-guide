@@ -80,7 +80,9 @@ onMounted(() => {});
       position: relative;
       z-index: 1;
       .category__counter {
+        user-select: none;
         position: absolute;
+        font-size: 17rem;
         top: 50%;
         left: 0%;
         color: $third_110;

@@ -4,6 +4,16 @@ import authApi from "@/api/auth";
 import { UserType } from "@/types/user-types";
 import { setItem } from "@/helpers/persistanceStorage";
 
+export enum AuthMutations {
+  registerStart = "[auth] registerStart",
+  registerSuccess = "[auth] registerSuccess",
+  registerFailure = "[auth] registerFailure",
+}
+
+export enum AuthActions {
+  register = "[auth] register",
+}
+
 type State = {
   isSubmitting: boolean;
   currentUser: object | null;
@@ -19,37 +29,37 @@ const state: State = {
 };
 
 const mutations: MutationTree<State> = {
-  registerStart(state: State) {
+  [AuthMutations.registerStart](state: State) {
     state.isSubmitting = true;
     state.validationErrors = null;
   },
-  registerSuccess(state: State, payload: UserType) {
+  [AuthMutations.registerSuccess](state: State, payload: UserType) {
     state.isSubmitting = false;
     state.currentUser = payload;
     state.isLoggedIn = true;
   },
-  registerFailure(state: State, payload: string[]) {
+  [AuthMutations.registerFailure](state: State, payload: string[]) {
     state.isSubmitting = false;
     state.validationErrors = payload;
   },
 };
 
 const actions: ActionTree<State, any> = {
-  register(
+  [AuthActions.register](
     { commit, state }: ActionContext<State, any>,
     credentials: UserType
   ) {
     return new Promise((resolve, reject) => {
-      commit("registerStart");
+      commit(AuthMutations.registerStart);
       authApi
         .register(credentials)
         .then((response) => {
-          commit("registerSuccess", response.data.user);
+          commit(AuthMutations.registerSuccess, response.data.user);
           setItem("accessToken", response.data.user.token);
           resolve(response.data.user);
         })
         .catch((error: AxiosError<{ errors?: string[] }>) => {
-          commit("registerFailure", error?.response?.data?.errors);
+          commit(AuthMutations.registerFailure, error?.response?.data?.errors);
           console.log("ERRORS", error?.response?.data?.errors);
         });
     });
