@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
+
 import ArrowRight from "@/images/svg/arrow-right.vue";
 
 const props = defineProps({
@@ -126,7 +127,6 @@ onMounted(() => {});
       align-items: center;
       gap: 1rem;
       color: $primary;
-
       transition: color 0.3s ease-in-out;
 
       &:hover {

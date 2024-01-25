@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { onMounted, computed, ComputedRef, reactive } from "vue";
+import {
+  onMounted,
+  computed,
+  ComputedRef,
+  reactive,
+  WritableComputedRef,
+} from "vue";
 import ArrowRight from "@/images/svg/arrow-right.vue";
 
 import { useStore } from "vuex";
@@ -19,6 +25,16 @@ const validationErrors: ComputedRef<AuthTypes["validationErrors"]> = computed(
   () => store.state.auth.validationErrors
 );
 
+const usernameOrEmail: WritableComputedRef<string | null> = computed({
+  get(): string | null {
+    return user.username || user.email;
+  },
+  set(value: string | null) {
+    user.username = !value?.includes("@") ? value : null;
+    user.email = value?.includes("@") ? value : null;
+  },
+});
+
 const user: UserType = reactive({
   username: null,
   email: null,
@@ -27,12 +43,12 @@ const user: UserType = reactive({
 
 const onsubmit = (): void => {
   store
-    .dispatch(AuthActions.register, user as UserType)
+    .dispatch(AuthActions.login, user as UserType)
     .then((user: UserType) => {
       router.push({ name: "home" });
     })
     .catch((error: Error) => {
-      console.error("Error during registration:", error);
+      console.error("Error during login:", error);
     });
 };
 
@@ -41,21 +57,8 @@ onMounted(() => {});
 
 <template>
   <section class="wrap_50">
-    <div class="register">
-      <div class="register__left">
-        <div class="left__info">
-          <h2>Lorem ipsum dolor sit amet.</h2>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea,
-            officiis.
-          </p>
-          <router-link :to="{ name: 'login' }" class="left__link">
-            <span class="link__text">Have an account?</span>
-            <ArrowRight svg-class="link__svg" />
-          </router-link>
-        </div>
-      </div>
-      <div class="register__right">
+    <div class="login">
+      <div class="login__left">
         <sup
           style="color: red"
           v-for="(valueError, nameError) in validationErrors"
@@ -65,17 +68,14 @@ onMounted(() => {});
             error
           }}</span>
         </sup>
-        <h2>Registration</h2>
-        <form @submit.prevent="onsubmit" class="right__form">
+        <h2>Login</h2>
+        <form @submit.prevent="onsubmit" class="left__form">
           <div>
             <input
-              v-model="user.username"
+              v-model="usernameOrEmail"
               type="text"
-              placeholder="User Name"
+              placeholder="User Name Or Email"
             />
-          </div>
-          <div>
-            <input v-model="user.email" type="text" placeholder="Email" />
           </div>
           <div>
             <input v-model="user.password" type="text" placeholder="Pass" />
@@ -84,60 +84,39 @@ onMounted(() => {});
             <input type="checkbox" name="reg_policy" id="reg_policy" />
             <label for="reg_policy">I accept all terms & condition</label>
           </div>
-          <button :disabled="isSubmitting">Sign Up</button>
+          <button :disabled="isSubmitting">Sign In</button>
         </form>
+      </div>
+      <div class="login__right">
+        <div class="right__info">
+          <h2>Lorem ipsum dolor sit amet.</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea,
+            officiis.
+          </p>
+          <router-link :to="{ name: 'register' }" class="right__link">
+            <span class="link__text">Need an account?</span>
+            <ArrowRight svg-class="link__svg" />
+          </router-link>
+        </div>
       </div>
     </div>
   </section>
 </template>
 
 <style scoped lang="scss">
-.register {
+.login {
   margin: 0 auto;
   display: flex;
   flex-direction: row;
   gap: 1rem;
-
-  .register__left {
-    width: 60%;
-    margin: auto 0;
-
-    .left__info {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      h2 {
-      }
-      p {
-      }
-      .left__link {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 0.5rem;
-        color: $primary;
-        transition: color 0.3s ease-in-out;
-
-        &:hover {
-          color: $secondary;
-        }
-
-        svg {
-          display: block;
-          width: 1.5rem;
-          height: auto;
-        }
-      }
-    }
-  }
-
-  .register__right {
+  .login__left {
     width: 40%;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 
-    .right__form {
+    .left__form {
       display: flex;
       flex-direction: column;
       gap: 1rem;
@@ -169,11 +148,43 @@ onMounted(() => {});
       }
     }
   }
+  .login__right {
+    width: 60%;
+    margin: auto 0;
+
+    .right__info {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      h2 {
+      }
+      p {
+      }
+      .right__link {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+        color: $primary;
+        transition: color 0.3s ease-in-out;
+
+        &:hover {
+          color: $secondary;
+        }
+
+        svg {
+          display: block;
+          width: 1.5rem;
+          height: auto;
+        }
+      }
+    }
+  }
 }
 </style>
 
 <style lang="scss">
-.left__link {
+.right__link {
   &:hover {
     .link__svg {
       transform: translateX(5px);

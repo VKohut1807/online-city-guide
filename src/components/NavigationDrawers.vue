@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, Ref, onMounted } from "vue";
+
 import { NavLinksType } from "@/types/links-types";
 
 const props = defineProps({

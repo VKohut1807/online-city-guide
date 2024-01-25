@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, Ref, onMounted } from "vue";
+
 import { LinksType } from "@/types/links-types";
 
 const props = defineProps({
@@ -47,6 +48,10 @@ onMounted(() => {});
         </li>
       </ul>
       <div class="header__right_gr">
+        <router-link :to="{ name: 'login' }" class="right_gr__login">
+          <mdicon name="AccountCircleOutline" />
+          Login
+        </router-link>
         <router-link :to="{ name: 'register' }" class="right_gr__register">
           <mdicon name="AccountCircleOutline" />
           Register
@@ -117,7 +122,8 @@ onMounted(() => {});
       flex-direction: row;
       gap: 1rem;
 
-      .right_gr__register {
+      .right_gr__register,
+      .right_gr__login {
         display: flex;
         flex-direction: row;
         align-items: center;
