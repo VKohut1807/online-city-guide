@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, Ref, onMounted } from "vue";
+import {ref, Ref, onMounted} from "vue";
 
 import OcgNavBar from "@/components/NavBar.vue";
 import OcgNavigationDrawers from "@/components/NavigationDrawers.vue";

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { onMounted, computed, ComputedRef, reactive } from "vue";
+import {onMounted, computed, ComputedRef, reactive} from "vue";
 import ArrowRight from "@/images/svg/arrow-right.vue";
 
-import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import {useStore} from "vuex";
+import {useRouter} from "vue-router";
 
-import { AuthActions } from "@/store/modules/auth";
-import { UserType } from "@/types/user-types";
-import { AuthTypes } from "@/types/auth-types";
+import {AuthActions} from "@/store/modules/auth";
+import {UserType} from "@/types/user-types";
+import {AuthTypes} from "@/types/auth-types";
 
 const store = useStore();
 const router = useRouter();
@@ -29,10 +29,10 @@ const onsubmit = (): void => {
   store
     .dispatch(AuthActions.register, user as UserType)
     .then((user: UserType) => {
-      router.push({ name: "home" });
+      router.push({name: "home"});
     })
-    .catch((error: Error) => {
-      console.error("Error during registration:", error);
+    .catch((errors: Error) => {
+      console.error("Error during registration:", errors);
     });
 };
 
@@ -49,7 +49,7 @@ onMounted(() => {});
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea,
             officiis.
           </p>
-          <router-link :to="{ name: 'login' }" class="left__link">
+          <router-link :to="{name: 'login'}" class="left__link">
             <span class="link__text">Have an account?</span>
             <ArrowRight svg-class="link__svg" />
           </router-link>

@@ -1,9 +1,9 @@
-import { MutationTree, ActionTree, ActionContext } from "vuex";
-import { AxiosError } from "axios";
+import {MutationTree, ActionTree, ActionContext} from "vuex";
+import {AxiosError} from "axios";
 import authApi from "@/api/auth";
-import { UserType } from "@/types/user-types";
-import { AuthTypes } from "@/types/auth-types";
-import { setItem } from "@/helpers/persistanceStorage";
+import {UserType} from "@/types/user-types";
+import {AuthTypes} from "@/types/auth-types";
+import {setItem} from "@/helpers/persistanceStorage";
 
 export enum AuthMutations {
   registerStart = "[auth] registerStart",
@@ -59,7 +59,7 @@ const mutations: MutationTree<AuthTypes> = {
 
 const actions: ActionTree<AuthTypes, any> = {
   [AuthActions.register](
-    { commit, state }: ActionContext<AuthTypes, any>,
+    {commit, state}: ActionContext<AuthTypes, any>,
     credentials: UserType
   ) {
     return new Promise((resolve, reject) => {
@@ -68,18 +68,23 @@ const actions: ActionTree<AuthTypes, any> = {
         .register(credentials)
         .then((response) => {
           commit(AuthMutations.registerSuccess, response.data.user);
+          console.log("registerSuccess", response);
+
           setItem("accessToken", response.data.user.token);
           resolve(response.data.user);
         })
-        .catch((error: AxiosError<{ errors?: string[] }>) => {
-          commit(AuthMutations.registerFailure, error?.response?.data?.errors);
-          console.log("ERRORS", error?.response?.data?.errors);
+        .catch((errors: AxiosError<{message?: string[]}>) => {
+          commit(
+            AuthMutations.registerFailure,
+            errors?.response?.data?.message
+          );
+          console.log("ERRORS REGISTER", errors?.response?.data?.message);
         });
     });
   },
 
   [AuthActions.login](
-    { commit, state }: ActionContext<AuthTypes, any>,
+    {commit, state}: ActionContext<AuthTypes, any>,
     credentials: UserType
   ) {
     return new Promise((resolve, reject) => {
@@ -91,9 +96,9 @@ const actions: ActionTree<AuthTypes, any> = {
           setItem("accessToken", response.data.user.token);
           resolve(response.data.user);
         })
-        .catch((error: AxiosError<{ errors?: string[] }>) => {
+        .catch((error: AxiosError<{errors?: string[]}>) => {
           commit(AuthMutations.loginFailure, error?.response?.data?.errors);
-          console.log("ERRORS", error?.response?.data?.errors);
+          console.log("ERRORS LOGIN", error?.response?.data?.errors);
         });
     });
   },
